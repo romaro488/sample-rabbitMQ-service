@@ -1,0 +1,59 @@
+version: '3'
+services:
+  rabbit1:
+    image: rabbitmq:management
+    container_name: rabbit1
+    hostname: rabbit1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=ha-cluster
+      - RABBITMQ_NODENAME=rabbit1
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+    ports:
+      - 5672:5672
+      - 15672:15672
+
+  rabbit2:
+    image: rabbitmq:management
+    container_name: rabbit2
+    hostname: rabbit2
+    depends_on:
+      - rabbit1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=ha-cluster
+      - RABBITMQ_NODENAME=rabbit2
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+    ports:
+      - 5673:5672
+      - 15673:15672
+
+  rabbit3:
+    image: rabbitmq:management
+    container_name: rabbit3
+    hostname: rabbit3
+    depends_on:
+      - rabbit1
+    environment:
+      - RABBITMQ_ERLANG_COOKIE=ha-cluster
+      - RABBITMQ_NODENAME=rabbit3
+    volumes:
+      - ./rabbitmq/rabbitmq.conf:/etc/rabbitmq/rabbitmq.conf
+      - ./rabbitmq/definitions.json:/etc/rabbitmq/definitions.json
+    ports:
+      - 5674:5672
+      - 15674:15672
+
+  sender:
+    container_name: sender
+    build: sender
+    depends_on:
+      - rabbit1
+
+  listener:
+    container_name: listener
+    build: listener
+    depends_on:
+      - rabbit1
