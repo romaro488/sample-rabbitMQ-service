@@ -26,8 +26,8 @@ In the terminal write next command:
 - Restart the first RabbitMQ node and make sure it joined the cluster
 
 - write next command in the new terminal window
-  `docker-compose down <containerName>`  
-  For example `docker-compose down rabbit1`
+  `docker-compose stop <containerName>`  
+  For example `docker-compose stop rabbit1`
 
 ## How to stop all containers??
 
